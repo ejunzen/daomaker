@@ -1,0 +1,38 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+NODE	opdb.h	/^} NODE;$/;"	t	typeref:struct:node
+SIZE	utils.c	/^static int SIZE = 'A' - 'a';$/;"	v	file:
+TYPE_SIZE	main.c	/^const int TYPE_SIZE = 6;$/;"	v
+_MYSQL_H	opdb.h	2;"	d
+column	opdb.h	/^	char* column;$/;"	m	struct:node
+comment	opdb.h	/^	char* comment;$/;"	m	struct:node
+db	main.c	/^static char* db   = NULL;$/;"	v	file:
+end	opdb.c	/^NODE* end;$/;"	v
+fixArgv	main.c	/^void fixArgv(void){$/;"	f
+genorate_dao	main.c	/^void genorate_dao(NODE* list){$/;"	f
+genorate_daoimpl	main.c	/^void genorate_daoimpl(NODE* list){$/;"	f
+genorate_mapper	main.c	/^void genorate_mapper(NODE* list){$/;"	f
+genorate_model	main.c	/^void genorate_model(NODE* list,char* model_name){$/;"	f
+getConection	opdb.c	/^void getConection(const char* host,$/;"	f
+getJavaType	main.c	/^char* getJavaType(char* t){$/;"	f
+getStructs	opdb.c	/^NODE* getStructs(const char* tableName){$/;"	f
+getUperName	utils.c	/^int getUperName(const char* source,char* target){$/;"	f
+head	opdb.c	/^NODE* head;$/;"	v
+host	main.c	/^static char* host = NULL;$/;"	v	file:
+java_type	main.c	/^char* java_type[] = {$/;"	v
+keys	opdb.c	/^char* keys[1024];$/;"	v
+main	main.c	/^int main(int argc, char* argv[]){$/;"	f
+mysql_conn	opdb.c	/^static MYSQL mysql_conn;$/;"	v	file:
+next	opdb.h	/^	struct NODE* next;$/;"	m	struct:node	typeref:struct:node::NODE
+node	opdb.h	/^typedef struct node{$/;"	s
+printUsage	main.c	/^void printUsage(void){$/;"	f
+pwd	main.c	/^static char* pwd  = NULL;$/;"	v	file:
+sql_type	main.c	/^char* sql_type[] = {$/;"	v
+table	main.c	/^static char* table= NULL;$/;"	v	file:
+type	opdb.h	/^	char* type;$/;"	m	struct:node
+user	main.c	/^static char* user = NULL;$/;"	v	file:
+values	opdb.c	/^char* values[1024];$/;"	v
