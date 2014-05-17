@@ -276,6 +276,12 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	fprintf(file,"Package com.meituan.service\n\n");
 	fprintf(file,"public Class %sDAOImpl implements %sDAO {\n\n",model_name,model_name,model_name);
 
+	fprintf(file,"\tprivate final static String BASE = \"\";\n\n");
+	fprintf(file,"\tprivate final static String STATMENT_INSERT = BASE + \"insert\";\n\n");
+	fprintf(file,"\tprivate final static String STATMENT_SELECT = BASE + \"listByParam\";\n\n");
+	fprintf(file,"\tprivate final static String STATMENT_UPDATE = BASE + \"update\";\n\n");
+	fprintf(file,"\tprivate final static String STATMENT_DELETE = BASE + \"delete\";\n\n");
+
 	fprintf(file,"\tprivate SqlSessionTemplate sqlSessionTemplate;\n\n");
 	fprintf(file,"\tpublic void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {\n\t\tthis.sqlSessionTemplate = sqlSessionTemplate;\n\t}\n\n");
 
