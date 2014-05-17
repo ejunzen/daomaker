@@ -19,6 +19,8 @@ void genorate_param(NODE* list,char* model_name);
 void genorate_dao(NODE* list,char* model_name);
 void genorate_daoimpl(NODE* list,char* model_name);
 void genorate_mapper(NODE* list,char* model_name,char* table_name);
+void genorate_service(NODE* list,char* model_name);
+void genorate_serviceimpl(NODE* list,char* model_name);
 
 char* getJavaType(char* t);
 char* getJdbcType(char* t);
@@ -86,6 +88,8 @@ int main(int argc, char* argv[]){
 		genorate_dao(list,model_name);
 		genorate_daoimpl(list,model_name);
 		genorate_mapper(list,model_name,table);
+		genorate_service(list,model_name);
+		genorate_serviceimpl(list,model_name);
 	}else{
 		fprintf(stderr,"can not get any info from db!");
 		return 127;
@@ -229,11 +233,52 @@ void genorate_param(NODE* list,char* model_name){
 void genorate_dao(NODE* list,char* model_name){
 	char temp[1024];
 	memset(temp,0,1024);
-	strcpy(temp,model_name);
+	strcat(temp,"I");
+	strcat(temp,model_name);
 	strcat(temp,"DAO.java");
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"Package com.meituan.service\n\n");
 	fprintf(file,"public Interface %sDAO {\n",model_name);
+
+	//insert
+	fprintf(file,"\tboolean insert(%sDO ",model_name);	
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDO);\n\n",model_name);
+
+	//update
+	model_name[0] = model_name[0]+'A'-'a';
+	fprintf(file,"\tboolean update(%sDO ",model_name);	
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDO);\n\n", model_name);
+
+	//delete
+	model_name[0] = model_name[0]+'A'-'a';
+	fprintf(file,"\tboolean delete(%sDO ",model_name);	
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDO);\n\n",model_name);
+
+	//select
+	model_name[0] = model_name[0]+'A'-'a';
+	fprintf(file,"\tList<%sDO> listByParam(%sSearchParam",model_name,model_name);
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file," %sSearchParam);\n\n",model_name);
+	fprintf(file,"}\n");
+
+	//recovery
+	model_name[0] = model_name[0]+'A'-'a';
+
+	fclose(file);
+}
+
+void genorate_service(NODE* list,char* model_name){
+	char temp[1024];
+	memset(temp,0,1024);
+	strcat(temp,"I");
+	strcat(temp,model_name);
+	strcat(temp,"Service.java");
+	FILE* file = fopen(temp,"w");
+	fprintf(file,"Package com.meituan.service\n\n");
+	fprintf(file,"public Interface %sSerivce{\n",model_name);
 
 	//insert
 	fprintf(file,"\tboolean insert(%sDO ",model_name);	
@@ -274,7 +319,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	FILE* file = fopen(temp,"w");
 
 	fprintf(file,"Package com.meituan.service\n\n");
-	fprintf(file,"public Class %sDAOImpl implements %sDAO {\n\n",model_name,model_name,model_name);
+	fprintf(file,"public Class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
 
 	fprintf(file,"\tprivate final static String BASE = \"\";\n\n");
 	fprintf(file,"\tprivate final static String STATMENT_INSERT = BASE + \"insert\";\n\n");
@@ -300,6 +345,71 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	fprintf(file,"\tList<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
 	fprintf(file,"\t\treturn (List<%sDO>)sqlSessionTemplate.selectList(STATMENT_SELECT,param);\n",model_name);
 	fprintf(file,"\t}\n\n");
+
+	//update
+	fprintf(file,"\t@Override\n");
+	fprintf(file,"\tboolean update(%sDO ",model_name);	
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDO){\n", model_name);
+	fprintf(file,"\t\tint res = sqlSessionTemplate.update(STATEMENT_UPDATE, %sDO);\n",model_name);
+	fprintf(file,"\t\treturn res > 0;\n");
+	fprintf(file,"\t}\n\n");
+
+	//delete
+	model_name[0] = model_name[0]+'A'-'a';
+	fprintf(file,"\t@Override\n");
+	fprintf(file,"\tboolean delete(%sDO ",model_name);	
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDO){\n", model_name);
+	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATMENT_DELETE,%sDO);\n",model_name);
+	fprintf(file,"\t\treturn res > 0;\n");
+	fprintf(file,"\t}\n\n");
+
+	fprintf(file,"}\n");
+	model_name[0] = model_name[0]+'A'-'a';
+
+	fclose(file);
+
+}
+
+void genorate_serviceimpl(NODE* list,char* model_name){
+
+	char temp[1024];
+	memset(temp,0,1024);
+	strcpy(temp,model_name);
+	strcat(temp,"ServiceImpl.java");
+	FILE* file = fopen(temp,"w");
+
+	fprintf(file,"Package com.meituan.service\n\n");
+	fprintf(file,"public Class %sServiceImpl implements I%sSerivce{\n\n",model_name,model_name,model_name);
+
+	fprintf(file,"\tprivate I%sDAO",model_name); 
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDAO;\n\n",model_name);
+	model_name[0] = model_name[0]+'A'-'a';
+	fprintf(file,"\tpublic void set%sDAO(I%sDAO",model_name,model_name);
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDAO) {\n\t\tthis.%sDAO= %sDAO;\n\t}\n\n",model_name,model_name,model_name);
+	model_name[0] = model_name[0]+'A'-'a';
+
+	//insert
+	fprintf(file,"\t@Override\n");
+	fprintf(file,"\tboolean insert(%sDO ",model_name);	
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDO){\n",model_name);
+	fprintf(file,"\t\tboolean res = %sDAO.insert(%sDO);\n",model_name,model_name);
+	fprintf(file,"\t\treturn res;\n");
+	fprintf(file,"\t}\n\n");
+
+	//select
+	model_name[0] = model_name[0]+'A'-'a';
+	fprintf(file,"\t@Override\n");
+	fprintf(file,"\tList<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
+	fprintf(file,"\t\treturn ",model_name);
+	model_name[0] = model_name[0]+'a'-'A';
+	fprintf(file,"%sDAO.listByParam(param);\n",model_name);
+	fprintf(file,"\t}\n\n");
+	model_name[0] = model_name[0]+'A'-'a';
 
 	//update
 	fprintf(file,"\t@Override\n");
