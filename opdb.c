@@ -35,6 +35,7 @@ NODE* getStructs(const char* tableName){
 	MYSQL_RES *mysql_result; /* Result handle */
 	MYSQL_ROW mysql_row; /* Row data */
 	int f1, f2, num_row, num_col;
+	mysql_query(&mysql_conn,"set names utf8");
 	if (mysql_query(&mysql_conn, sql) == 0) {        
 		mysql_result = mysql_store_result(&mysql_conn); // get the result from the executing select query
 		num_row = mysql_num_rows(mysql_result); /* Get the no. of row */
