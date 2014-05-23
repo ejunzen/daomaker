@@ -139,8 +139,14 @@ void genorate_model(NODE* list,char* model_name){
 	strcpy(temp,model_name);
 	strcat(temp,"DO.java");
 	FILE* file = fopen(temp,"w");
-	fwrite("Package com.meituan.service\n\n",1,29,file);
-	fwrite("Public Class ",1,13,file);
+	fwrite("package com.meituan.service;\n\n",1,29,file);
+
+	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.io.Serializable;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import java.util.Map;\n");
+
+	fwrite("public class ",1,13,file);
 	fwrite(model_name,1,strlen(model_name),file);
 	fwrite("{\n",1,2,file);
 
@@ -156,7 +162,7 @@ void genorate_model(NODE* list,char* model_name){
 		char* type = getJavaType(list->type);	
 		fwrite("private ",1,8,file);
 		fwrite(type,1,strlen(type),file);
-		fwrite(list->column,1,strlen(list->column),file);
+		fwrite(temp,1,strlen(temp),file);
 		fwrite(";\n\n",1,3,file);
 		fwrite("\tpublic void set",1,16,file);
 		fwrite(temp,1,strlen(temp),file);
@@ -192,10 +198,16 @@ void genorate_param(NODE* list,char* model_name){
 	strcpy(temp,model_name);
 	strcat(temp,"SearchParam.java");
 	FILE* file = fopen(temp,"w");
-	fwrite("Package com.meituan.service\n\n",1,29,file);
-	fwrite("Public Class ",1,13,file);
+	fwrite("package com.meituan.service;\n\n",1,29,file);
+
+	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.io.Serializable;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import java.util.Map;\n");
+
+	fwrite("public class ",1,13,file);
 	fwrite(model_name,1,strlen(model_name),file);
-	fwrite("{\n",1,2,file);
+	fprintf(file,"SearchParam{\n");
 
 	while(list!=NULL){
 
@@ -209,7 +221,7 @@ void genorate_param(NODE* list,char* model_name){
 		char* type = getJavaType(list->type);	
 		fwrite("private ",1,8,file);
 		fwrite(type,1,strlen(type),file);
-		fwrite(list->column,1,strlen(list->column),file);
+		fwrite(temp,1,strlen(temp),file);
 		fwrite(";\n\n",1,3,file);
 		fwrite("\tpublic void set",1,16,file);
 		fwrite(temp,1,strlen(temp),file);
@@ -237,29 +249,35 @@ void genorate_dao(NODE* list,char* model_name){
 	strcat(temp,model_name);
 	strcat(temp,"DAO.java");
 	FILE* file = fopen(temp,"w");
-	fprintf(file,"Package com.meituan.service\n\n");
-	fprintf(file,"public Interface I%sDAO {\n",model_name);
+	fprintf(file,"package com.meituan.service;\n\n");
+
+	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.io.Serializable;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import java.util.Map;\n");
+
+	fprintf(file,"public interface I%sDAO {\n",model_name);
 
 	//insert
-	fprintf(file,"\tboolean insert(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean insert(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n",model_name);
 
 	//update
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tboolean update(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n", model_name);
 
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tboolean delete(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n",model_name);
 
 	//select
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tList<%sDO> listByParam(%sSearchParam",model_name,model_name);
+	fprintf(file,"\tpublic List<%sDO> listByParam(%sSearchParam",model_name,model_name);
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file," %sSearchParam);\n\n",model_name);
 	fprintf(file,"}\n");
@@ -277,8 +295,14 @@ void genorate_service(NODE* list,char* model_name){
 	strcat(temp,model_name);
 	strcat(temp,"Service.java");
 	FILE* file = fopen(temp,"w");
-	fprintf(file,"Package com.meituan.service\n\n");
-	fprintf(file,"public Interface %sSerivce{\n",model_name);
+	fprintf(file,"package com.meituan.service;\n\n");
+
+	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.io.Serializable;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import java.util.Map;\n");
+
+	fprintf(file,"public interface %sSerivce{\n",model_name);
 
 	//insert
 	fprintf(file,"\tboolean insert(%sDO ",model_name);	
@@ -318,21 +342,28 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	strcat(temp,"DAOImpl.java");
 	FILE* file = fopen(temp,"w");
 
-	fprintf(file,"Package com.meituan.service\n\n");
-	fprintf(file,"public Class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
+	fprintf(file,"package com.meituan.service;\n\n");
+
+	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.io.Serializable;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import java.util.Map;\n");
+	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;");
+
+	fprintf(file,"public class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
 
 	fprintf(file,"\tprivate final static String BASE = \"\";\n\n");
-	fprintf(file,"\tprivate final static String STATMENT_INSERT = BASE + \"insert\";\n\n");
-	fprintf(file,"\tprivate final static String STATMENT_SELECT = BASE + \"listByParam\";\n\n");
-	fprintf(file,"\tprivate final static String STATMENT_UPDATE = BASE + \"update\";\n\n");
-	fprintf(file,"\tprivate final static String STATMENT_DELETE = BASE + \"delete\";\n\n");
+	fprintf(file,"\tprivate final static String STATEMENT_INSERT = BASE + \"insert\";\n\n");
+	fprintf(file,"\tprivate final static String STATEMENT_SELECT = BASE + \"listByParam\";\n\n");
+	fprintf(file,"\tprivate final static String STATEMENT_UPDATE = BASE + \"update\";\n\n");
+	fprintf(file,"\tprivate final static String STATEMENT_DELETE = BASE + \"delete\";\n\n");
 
 	fprintf(file,"\tprivate SqlSessionTemplate sqlSessionTemplate;\n\n");
 	fprintf(file,"\tpublic void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {\n\t\tthis.sqlSessionTemplate = sqlSessionTemplate;\n\t}\n\n");
 
 	//insert
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tboolean insert(%sDO ",model_name);	
+	fprintf(file,"\apublic tboolean insert(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n",model_name);
 	fprintf(file,"\t\tint res = sqlSessionTemplate.insert(STATEMENT_INSERT, %sDO);\n",model_name);
@@ -342,13 +373,13 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	//select
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tList<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
-	fprintf(file,"\t\treturn (List<%sDO>)sqlSessionTemplate.selectList(STATMENT_SELECT,param);\n",model_name);
+	fprintf(file,"\tpublic List<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
+	fprintf(file,"\t\treturn (List<%sDO>)sqlSessionTemplate.selectList(STATEMENT_SELECT,param);\n",model_name);
 	fprintf(file,"\t}\n\n");
 
 	//update
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tboolean update(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
 	fprintf(file,"\t\tint res = sqlSessionTemplate.update(STATEMENT_UPDATE, %sDO);\n",model_name);
@@ -358,10 +389,10 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tboolean delete(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
-	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATMENT_DELETE,%sDO);\n",model_name);
+	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATEMENT_DELETE,%sDO);\n",model_name);
 	fprintf(file,"\t\treturn res > 0;\n");
 	fprintf(file,"\t}\n\n");
 
@@ -381,6 +412,12 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	FILE* file = fopen(temp,"w");
 
 	fprintf(file,"Package com.meituan.service\n\n");
+
+	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.io.Serializable;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import java.util.Map;\n");
+
 	fprintf(file,"public Class %sServiceImpl implements I%sSerivce{\n\n",model_name,model_name,model_name);
 
 	fprintf(file,"\tprivate I%sDAO",model_name); 
@@ -394,7 +431,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 
 	//insert
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tboolean insert(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean insert(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n",model_name);
 	fprintf(file,"\t\tboolean res = %sDAO.insert(%sDO);\n",model_name,model_name);
@@ -404,7 +441,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	//select
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tList<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
+	fprintf(file,"\tpublic List<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
 	fprintf(file,"\t\treturn ",model_name);
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDAO.listByParam(param);\n",model_name);
@@ -413,7 +450,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 
 	//update
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tboolean update(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
 	fprintf(file,"\t\tint res = sqlSessionTemplate.update(STATEMENT_UPDATE, %sDO);\n",model_name);
@@ -423,10 +460,10 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tboolean delete(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
-	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATMENT_DELETE,%sDO);\n",model_name);
+	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATEMENT_DELETE,%sDO);\n",model_name);
 	fprintf(file,"\t\treturn res > 0;\n");
 	fprintf(file,"\t}\n\n");
 
@@ -446,7 +483,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	char temp[1024];
 	memset(temp,0,1024);
-	sprintf(temp,"mapper-%s.xml",model_name);
+	sprintf(temp,"mapper-%s.xml",table_name);
 	FILE* file = fopen(temp,"w");
 	//xml head
 	fprintf(file,"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
@@ -460,7 +497,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 		getUperName(head->column,temp);
 		temp[0] = temp[0] + 'a' - 'A';
 		char* type = getJdbcType(head->type);
-		fprintf(file,"\t\t<result column=\"%s\" property=\"%s jdbcType=%s\"/>\n",list->column,temp,type);
+		fprintf(file,"\t\t<result column=\"%s\" property=\"%s\" jdbcType=\"%s\"/>\n",head->column,temp,type);
 		head = (NODE*) head->next;
 	}
 	fprintf(file,"\t</resultMap>\n\n");
@@ -495,7 +532,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 
 	//update
 	fprintf(file,"\t<update id=\"update\" parameterType=\"com.meituan.service.mobile.hotel.%sDO\">\n",model_name);
-	fprintf(file,"\t\tupdate %s set \n",table_name);
+	fprintf(file,"\t\tupdate %s <set> \n",table_name);
 	head = list;
 	while(head != NULL){
 		memset(temp,0,1024);
@@ -503,10 +540,11 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 		temp[0] = temp[0] + 'a' - 'A';
 		char* type = getJdbcType(head->type);
 		fprintf(file,"\t\t<if test=\"%s != null\">\n",temp);
-		fprintf(file,"\t\t\tand %s = #{%s,jdbcType=%s},\n",head->column,temp,type);
+		fprintf(file,"\t\t\t%s = #{%s,jdbcType=%s},\n",head->column,temp,type);
 		fprintf(file,"\t\t</if>\n");
 		head = (NODE*)head->next;
 	}
+	fprintf(file,"</set>");
 	memset(temp,0,1024);
 	getUperName(list->column,temp);
 	temp[0] = temp[0] + 'a' - 'A';
@@ -517,7 +555,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 
 	//insert
 	fprintf(file,"\t<insert id=\"insert\" parameterType=\"com.meituan.service.mobile.hotel.%sDO\">\n",model_name);
-	fprintf(file,"\t\tinsert into %s(<include refid=\"Base_Column_List\" />) values \n",table_name);
+	fprintf(file,"\t\tinsert into %s(<include refid=\"Base_Column_List\" />) \n",table_name);
 	fprintf(file,"\t\tvalues(\n");
 	head = list;
 	while(head != NULL){
@@ -547,7 +585,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	fprintf(file,"\t</delete>");
 
 	//xml tail
-	fprintf(file,"</xml>\n");
+	fprintf(file,"</mapper>\n");
 
 	fclose(file);
 }
