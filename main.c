@@ -32,7 +32,7 @@ char* sql_type[] = {
 };
 
 char* java_type[] = {
-	"int ","Date ", "String ", "int ", "long ","int "
+	"Integer ","Date ", "String ", "Integer ", "Long ","Integer "
 };
 
 char* jdbc_type[] = {
@@ -41,7 +41,7 @@ char* jdbc_type[] = {
 
 void printUsage(void){
 	fprintf(stdout,"DAOmaker v1.0\nejunzen@gmail.com\n");
-	fprintf(stdout,"daomake -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info\n");
+	fprintf(stdout,"daomaker -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info\n");
 	return;
 }
 
@@ -150,20 +150,31 @@ void genorate_model(NODE* list,char* model_name){
 	fwrite(model_name,1,strlen(model_name),file);
 	fwrite("{\n",1,2,file);
 
-	while(list!=NULL){
+	NODE* head = list;
+	while(head!=NULL){
 
 		memset(temp,0,1024);
-		getUperName(list->column,temp);
+		getUperName(head->column,temp);
 
 		fwrite("\t//",1,3,file);
-		fwrite(list->comment,1,strlen(list->comment),file);
+		fwrite(head->comment,1,strlen(head->comment),file);
 		fwrite("\n",1,1,file);
 		fwrite("\t",1,1,file);
-		char* type = getJavaType(list->type);	
+		char* type = getJavaType(head->type);	
 		fwrite("private ",1,8,file);
 		fwrite(type,1,strlen(type),file);
 		fwrite(temp,1,strlen(temp),file);
 		fwrite(";\n\n",1,3,file);
+		head = (NODE*) head->next;
+	}
+
+	head = list;
+	while(head != NULL){
+
+		memset(temp,0,1024);
+		getUperName(head->column,temp);
+		char* type = getJavaType(head->type);	
+
 		fwrite("\tpublic void set",1,16,file);
 		fwrite(temp,1,strlen(temp),file);
 		fwrite("(",1,1,file);
@@ -176,7 +187,7 @@ void genorate_model(NODE* list,char* model_name){
 		fprintf(file,"\tpublic %s get%s(){\n",type,temp);
 		temp[0] = temp[0]+'a'-'A';
 		fprintf(file,"\t\treturn %s;\n\t}\n\n",temp);
-		list = (NODE*) list->next;
+		head = (NODE*) head->next;
 	}
 	fwrite("}\n",1,2,file);
 
@@ -209,20 +220,31 @@ void genorate_param(NODE* list,char* model_name){
 	fwrite(model_name,1,strlen(model_name),file);
 	fprintf(file,"SearchParam{\n");
 
-	while(list!=NULL){
+	NODE* head = list;
+	while(head!=NULL){
 
 		memset(temp,0,1024);
-		getUperName(list->column,temp);
+		getUperName(head->column,temp);
 
 		fwrite("\t//",1,3,file);
-		fwrite(list->comment,1,strlen(list->comment),file);
+		fwrite(head->comment,1,strlen(head->comment),file);
 		fwrite("\n",1,1,file);
 		fwrite("\t",1,1,file);
-		char* type = getJavaType(list->type);	
+		char* type = getJavaType(head->type);	
 		fwrite("private ",1,8,file);
 		fwrite(type,1,strlen(type),file);
 		fwrite(temp,1,strlen(temp),file);
 		fwrite(";\n\n",1,3,file);
+		head = (NODE*) head->next;
+	}
+
+	head = list;
+	while(head != NULL){
+
+		memset(temp,0,1024);
+		getUperName(head->column,temp);
+		char* type = getJavaType(head->type);	
+
 		fwrite("\tpublic void set",1,16,file);
 		fwrite(temp,1,strlen(temp),file);
 		fwrite("(",1,1,file);
@@ -235,8 +257,9 @@ void genorate_param(NODE* list,char* model_name){
 		fprintf(file,"\tpublic %s get%s(){\n",type,temp);
 		temp[0] = temp[0]+'a'-'A';
 		fprintf(file,"\t\treturn %s;\n\t}\n\n",temp);
-		list = (NODE*) list->next;
+		head = (NODE*) head->next;
 	}
+
 	fwrite("}\n",1,2,file);
 
 	fclose(file);
