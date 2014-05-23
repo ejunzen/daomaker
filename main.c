@@ -43,7 +43,8 @@ char* jdbc_type[] = {
 
 void printUsage(void){
 	fprintf(stdout,"DAOmaker v1.0\nejunzen@gmail.com\n");
-	fprintf(stdout,"daomaker -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info\n");
+	fprintf(stdout,"daomaker -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.meituan.service.mobile\n");
+	fprintf(stdout,"all parameter have default values except table_name!\n");
 	return;
 }
 
