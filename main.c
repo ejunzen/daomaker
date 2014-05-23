@@ -348,7 +348,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
-	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;");
+	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;\n");
 
 	fprintf(file,"public class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
 
@@ -363,7 +363,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 
 	//insert
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\apublic tboolean insert(%sDO ",model_name);	
+	fprintf(file,"\tpublic tboolean insert(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n",model_name);
 	fprintf(file,"\t\tint res = sqlSessionTemplate.insert(STATEMENT_INSERT, %sDO);\n",model_name);
@@ -538,7 +538,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 
 	//update
 	fprintf(file,"\t<update id=\"update\" parameterType=\"com.meituan.service.mobile.hotel.%sDO\">\n",model_name);
-	fprintf(file,"\t\tupdate %s <set> \n",table_name);
+	fprintf(file,"\t\tupdate %s \n\t\t<set> \n",table_name);
 	head = list;
 	while(head != NULL){
 		memset(temp,0,1024);
@@ -550,7 +550,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 		fprintf(file,"\t\t</if>\n");
 		head = (NODE*)head->next;
 	}
-	fprintf(file,"</set>");
+	fprintf(file,"\t\t</set>\n");
 	memset(temp,0,1024);
 	getUperName(list->column,temp);
 	temp[0] = temp[0] + 'a' - 'A';
