@@ -12,6 +12,8 @@ static char* pwd  = NULL;
 static char* db   = NULL;
 static char* table= NULL;
 
+static char* package = NULL;
+
 void printUsage(void);
 void fixArgv(void);
 void genorate_model(NODE* list,char* model_name);
@@ -69,6 +71,9 @@ int main(int argc, char* argv[]){
 			case 'd':
 				db = optarg;
 				break;
+			case 'P':
+				package = optarg;
+				break;
 			default:
 				break;
 		}
@@ -115,6 +120,9 @@ void fixArgv(void){
 		fprintf(stderr,"please see usage:\n daomaker -v\n");
 		exit(127);
 	}
+	if(package == NULL){
+		package = "com.meituan.service";
+	}
 #ifdef DEBUG
 	printf("host:%s\n",host);
 	printf("user:%s\n",user);
@@ -139,7 +147,7 @@ void genorate_model(NODE* list,char* model_name){
 	strcpy(temp,model_name);
 	strcat(temp,"DO.java");
 	FILE* file = fopen(temp,"w");
-	fwrite("package com.meituan.service;\n\n",1,29,file);
+	fprintf(file,"package %s.domain;\n\n",package);
 
 	fprintf(file,"import java.util.Date\n");
 	fprintf(file,"import java.io.Serializable;\n");
@@ -209,7 +217,7 @@ void genorate_param(NODE* list,char* model_name){
 	strcpy(temp,model_name);
 	strcat(temp,"SearchParam.java");
 	FILE* file = fopen(temp,"w");
-	fwrite("package com.meituan.service;\n\n",1,29,file);
+	fprintf(file,"package %s.param;\n\n",package);
 
 	fprintf(file,"import java.util.Date\n");
 	fprintf(file,"import java.io.Serializable;\n");
@@ -272,12 +280,14 @@ void genorate_dao(NODE* list,char* model_name){
 	strcat(temp,model_name);
 	strcat(temp,"DAO.java");
 	FILE* file = fopen(temp,"w");
-	fprintf(file,"package com.meituan.service;\n\n");
+	fprintf(file,"package %s.dao;\n\n",package);
 
 	fprintf(file,"import java.util.Date\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
+	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
+	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 
 	fprintf(file,"public interface I%sDAO {\n",model_name);
 
@@ -318,12 +328,14 @@ void genorate_service(NODE* list,char* model_name){
 	strcat(temp,model_name);
 	strcat(temp,"Service.java");
 	FILE* file = fopen(temp,"w");
-	fprintf(file,"package com.meituan.service;\n\n");
+	fprintf(file,"package %s.service;\n\n",package);
 
 	fprintf(file,"import java.util.Date\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
+	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
+	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 
 	fprintf(file,"public interface %sSerivce{\n",model_name);
 
@@ -365,17 +377,20 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	strcat(temp,"DAOImpl.java");
 	FILE* file = fopen(temp,"w");
 
-	fprintf(file,"package com.meituan.service;\n\n");
+	fprintf(file,"package %s.dao.impl;\n\n",package);
 
 	fprintf(file,"import java.util.Date\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
 	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;\n");
+	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
+	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
+	fprintf(file,"import %s.dao.%sDAO;\n\n",package,model_name);
 
 	fprintf(file,"public class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
 
-	fprintf(file,"\tprivate final static String BASE = \"\";\n\n");
+	fprintf(file,"\tprivate final static String BASE = \"%s.%sMapper.\";\n\n",package,model_name);
 	fprintf(file,"\tprivate final static String STATEMENT_INSERT = BASE + \"insert\";\n\n");
 	fprintf(file,"\tprivate final static String STATEMENT_SELECT = BASE + \"listByParam\";\n\n");
 	fprintf(file,"\tprivate final static String STATEMENT_UPDATE = BASE + \"update\";\n\n");
@@ -434,12 +449,15 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	strcat(temp,"ServiceImpl.java");
 	FILE* file = fopen(temp,"w");
 
-	fprintf(file,"Package com.meituan.service\n\n");
+	fprintf(file,"package %s.service.impl;\n\n",package);
 
 	fprintf(file,"import java.util.Date\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
+	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
+	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
+	fprintf(file,"import %s.service.%sService;\n",package,model_name);
 
 	fprintf(file,"public Class %sServiceImpl implements I%sSerivce{\n\n",model_name,model_name,model_name);
 
@@ -517,9 +535,9 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	//xml head
 	fprintf(file,"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 	fprintf(file,"<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n");
-	fprintf(file,"<mapper namespace=\"com.meituan.service.mobile.hotel.%sMapper\" >\n",model_name);	
+	fprintf(file,"<mapper namespace=\"%s.%sMapper\" >\n",package,model_name);	
 	//resultMap
-	fprintf(file,"\t<resultMap id=\"BaseResultMap\" type=\"com.meituan.service.mobile.hotel.domain.%sDO\">\n",model_name);
+	fprintf(file,"\t<resultMap id=\"BaseResultMap\" type=\"%s.domain.%sDO\">\n",package,model_name);
 	NODE* head = list;
 	while(head != NULL){
 		memset(temp,0,1024);
@@ -543,7 +561,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	fprintf(file,"\n\t</sql>\n\n");
 
 	//select
-	fprintf(file,"\t<select id=\"listByParam\" parameterType=\"com.meituan.service.mobile.hotel.param.%sSearchParam\" resultMap=\"BaseResultMap\">\n",model_name);
+	fprintf(file,"\t<select id=\"listByParam\" parameterType=\"%s.param.%sSearchParam\" resultMap=\"BaseResultMap\">\n",package,model_name);
 	fprintf(file,"\t\tselect <include refid=\"Base_Column_List\"/>\n");
 	fprintf(file,"\t\tfrom %s where 1=1 \n",table_name);
 	head = list;
@@ -560,7 +578,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	fprintf(file,"\t</select>\n");
 
 	//update
-	fprintf(file,"\t<update id=\"update\" parameterType=\"com.meituan.service.mobile.hotel.%sDO\">\n",model_name);
+	fprintf(file,"\t<update id=\"update\" parameterType=\"%s.domain.%sDO\">\n",package,model_name);
 	fprintf(file,"\t\tupdate %s \n\t\t<set> \n",table_name);
 	head = list;
 	while(head != NULL){
@@ -583,7 +601,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	fprintf(file,"\t</update>\n");
 
 	//insert
-	fprintf(file,"\t<insert id=\"insert\" parameterType=\"com.meituan.service.mobile.hotel.%sDO\">\n",model_name);
+	fprintf(file,"\t<insert id=\"insert\" parameterType=\"%s.domain.%sDO\">\n",package,model_name);
 	fprintf(file,"\t\tinsert into %s(<include refid=\"Base_Column_List\" />) \n",table_name);
 	fprintf(file,"\t\tvalues(\n");
 	head = list;
@@ -611,7 +629,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	type = getJdbcType(list->type);
 	fprintf(file,"\t\twhere %s = #{%s,jdbcType=%s}\n",list->column,temp,type);
 		
-	fprintf(file,"\t</delete>");
+	fprintf(file,"\t</delete>\n");
 
 	//xml tail
 	fprintf(file,"</mapper>\n");
