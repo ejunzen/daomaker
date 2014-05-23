@@ -484,6 +484,12 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	char temp[1024];
 	memset(temp,0,1024);
 	sprintf(temp,"mapper-%s.xml",table_name);
+	int i=0;
+	for(;i<strlen(temp);i++){
+		if(temp[i]=='_'){
+			temp[i] = '-';
+		}
+	}
 	FILE* file = fopen(temp,"w");
 	//xml head
 	fprintf(file,"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
