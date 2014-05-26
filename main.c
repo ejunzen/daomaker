@@ -404,7 +404,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 
 	//insert
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tpublic tboolean insert(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean insert(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n",model_name);
 	fprintf(file,"\t\tint res = sqlSessionTemplate.insert(STATEMENT_INSERT, %sDO);\n",model_name);
