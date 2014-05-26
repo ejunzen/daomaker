@@ -391,7 +391,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 	fprintf(file,"import %s.dao.I%sDAO;\n\n",package,model_name);
 
-	fprintf(file,"public class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
+	fprintf(file,"public class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name);
 
 	fprintf(file,"\tprivate final static String BASE = \"%s.%sMapper.\";\n\n",package,model_name);
 	fprintf(file,"\tprivate final static String STATEMENT_INSERT = BASE + \"insert\";\n\n");
@@ -463,7 +463,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"import %s.service.I%sService;\n",package,model_name);
 	fprintf(file,"import %s.dao.I%sDAO;",package,model_name);
 
-	fprintf(file,"public Class %sServiceImpl implements I%sService{\n\n",model_name,model_name,model_name);
+	fprintf(file,"public Class %sServiceImpl implements I%sService{\n\n",model_name,model_name);
 
 	fprintf(file,"\tprivate I%sDAO",model_name); 
 	model_name[0] = model_name[0]+'a'-'A';
@@ -487,7 +487,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
 	fprintf(file,"\tpublic List<%sDO> listByParam(%sSearchParam param){\n",model_name, model_name);
-	fprintf(file,"\t\treturn ",model_name);
+	fprintf(file,"\t\treturn ");
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDAO.listByParam(param);\n",model_name);
 	fprintf(file,"\t}\n\n");
