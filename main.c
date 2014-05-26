@@ -150,14 +150,14 @@ void genorate_model(NODE* list,char* model_name){
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.domain;\n\n",package);
 
-	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.util.Date;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
 
 	fwrite("public class ",1,13,file);
 	fwrite(model_name,1,strlen(model_name),file);
-	fwrite("{\n",1,2,file);
+	fwrite("DO{\n",1,4,file);
 
 	NODE* head = list;
 	while(head!=NULL){
@@ -172,6 +172,7 @@ void genorate_model(NODE* list,char* model_name){
 		char* type = getJavaType(head->type);	
 		fwrite("private ",1,8,file);
 		fwrite(type,1,strlen(type),file);
+		temp[0] = temp[0] + 'a' -'A';
 		fwrite(temp,1,strlen(temp),file);
 		fwrite(";\n\n",1,3,file);
 		head = (NODE*) head->next;
@@ -220,7 +221,7 @@ void genorate_param(NODE* list,char* model_name){
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.param;\n\n",package);
 
-	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.util.Date;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -283,7 +284,7 @@ void genorate_dao(NODE* list,char* model_name){
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.dao;\n\n",package);
 
-	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.util.Date;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -331,7 +332,7 @@ void genorate_service(NODE* list,char* model_name){
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.service;\n\n",package);
 
-	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.util.Date;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -380,7 +381,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 
 	fprintf(file,"package %s.dao.impl;\n\n",package);
 
-	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.util.Date;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -452,7 +453,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 
 	fprintf(file,"package %s.service.impl;\n\n",package);
 
-	fprintf(file,"import java.util.Date\n");
+	fprintf(file,"import java.util.Date;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
