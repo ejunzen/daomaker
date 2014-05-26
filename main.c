@@ -243,6 +243,7 @@ void genorate_param(NODE* list,char* model_name){
 		char* type = getJavaType(head->type);	
 		fwrite("private ",1,8,file);
 		fwrite(type,1,strlen(type),file);
+		temp[0] = temp[0]+'a'-'A';
 		fwrite(temp,1,strlen(temp),file);
 		fwrite(";\n\n",1,3,file);
 		head = (NODE*) head->next;
@@ -339,7 +340,7 @@ void genorate_service(NODE* list,char* model_name){
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 
-	fprintf(file,"public interface %sSerivce{\n",model_name);
+	fprintf(file,"public interface I%sService{\n",model_name);
 
 	//insert
 	fprintf(file,"\tboolean insert(%sDO ",model_name);	
@@ -388,7 +389,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;\n");
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
-	fprintf(file,"import %s.dao.%sDAO;\n\n",package,model_name);
+	fprintf(file,"import %s.dao.I%sDAO;\n\n",package,model_name);
 
 	fprintf(file,"public class %sDAOImpl implements I%sDAO {\n\n",model_name,model_name,model_name);
 
@@ -459,9 +460,10 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"import java.util.Map;\n");
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
-	fprintf(file,"import %s.service.%sService;\n",package,model_name);
+	fprintf(file,"import %s.service.I%sService;\n",package,model_name);
+	fprintf(file,"import %s.dao.I%sDAO;",package,model_name);
 
-	fprintf(file,"public Class %sServiceImpl implements I%sSerivce{\n\n",model_name,model_name,model_name);
+	fprintf(file,"public Class %sServiceImpl implements I%sService{\n\n",model_name,model_name,model_name);
 
 	fprintf(file,"\tprivate I%sDAO",model_name); 
 	model_name[0] = model_name[0]+'a'-'A';
@@ -496,8 +498,8 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
-	fprintf(file,"\t\tint res = sqlSessionTemplate.update(STATEMENT_UPDATE, %sDO);\n",model_name);
-	fprintf(file,"\t\treturn res > 0;\n");
+	fprintf(file,"\t\tboolean res = %sDAO.update(%sDO);\n",model_name,model_name);
+	fprintf(file,"\t\treturn res;\n");
 	fprintf(file,"\t}\n\n");
 
 	//delete
@@ -506,8 +508,8 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
-	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATEMENT_DELETE,%sDO);\n",model_name);
-	fprintf(file,"\t\treturn res > 0;\n");
+	fprintf(file,"\t\tboolean res = %sDAO.delete(%sDO);\n",model_name,model_name);
+	fprintf(file,"\t\treturn res;\n");
 	fprintf(file,"\t}\n\n");
 
 	fprintf(file,"}\n");
