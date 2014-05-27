@@ -43,7 +43,7 @@ char* jdbc_type[] = {
 
 void printUsage(void){
 	fprintf(stdout,"DAOmaker v1.0\nejunzen@gmail.com\n");
-	fprintf(stdout,"daomaker -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.meituan.service.mobile\n");
+	fprintf(stdout,"daomaker -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.daomaker.test\n");
 	fprintf(stdout,"all parameter have default values except table_name!\n");
 	return;
 }
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]){
 
 void fixArgv(void){
 	if(host==NULL){
-		host = "192.168.2.229";
+		host = "127.0.0.1";
 	}
 	if(user==NULL){
 		user = "q3boy";
@@ -122,7 +122,7 @@ void fixArgv(void){
 		exit(127);
 	}
 	if(package == NULL){
-		package = "com.meituan.service";
+		package = "com.daomaker.test";
 	}
 #ifdef DEBUG
 	printf("host:%s\n",host);
