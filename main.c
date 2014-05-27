@@ -461,15 +461,15 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 	fprintf(file,"import %s.service.I%sService;\n",package,model_name);
-	fprintf(file,"import %s.dao.I%sDAO;",package,model_name);
+	fprintf(file,"import %s.dao.I%sDAO;\n",package,model_name);
 
-	fprintf(file,"public Class %sServiceImpl implements I%sService{\n\n",model_name,model_name);
+	fprintf(file,"public class %sServiceImpl implements I%sService{\n\n",model_name,model_name);
 
 	fprintf(file,"\tprivate I%sDAO",model_name); 
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file," %sDAO;\n\n",model_name);
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tpublic void set%sDAO(I%sDAO",model_name,model_name);
+	fprintf(file,"\tpublic void set%sDAO(I%sDAO ",model_name,model_name);
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDAO) {\n\t\tthis.%sDAO= %sDAO;\n\t}\n\n",model_name,model_name,model_name);
 	model_name[0] = model_name[0]+'A'-'a';
