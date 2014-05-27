@@ -30,15 +30,15 @@ char* getJdbcType(char* t);
 const int TYPE_SIZE = 6;
 
 char* sql_type[] = {
-	"int","datetime","varchar","smallint","bigint","tinyint"
+	"int","datetime","varchar","smallint","bigint","tinyint","float","double"
 };
 
 char* java_type[] = {
-	"Integer ","Date ", "String ", "Integer ", "Long ","Integer "
+	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double"
 };
 
 char* jdbc_type[] = {
-	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER"
+	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE"
 };
 
 void printUsage(void){
