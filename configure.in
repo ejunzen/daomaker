@@ -1,0 +1,76 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.63])
+AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+AM_INIT_AUTOMAKE(daomaker,1.0)
+
+# Checks for programs.
+AC_PROG_CC
+
+	AC_ARG_WITH([mysql],
+        AS_HELP_STRING([--with-mysql=@<:@ARG@:>@],
+            [use MySQL client library @<:@default=yes@:>@, optionally specify path to mysql_config]
+        ),
+        [
+        if test "$withval" = "no"; then
+            want_mysql="no"
+        elif test "$withval" = "yes"; then
+            want_mysql="yes"
+        else
+            want_mysql="yes"
+            MYSQL_CONFIG="$withval"
+        fi
+        ],
+        [want_mysql="yes"]
+    )
+    AC_ARG_VAR([MYSQL_CONFIG], [path to your mysql dir])
+
+    MYSQL_CFLAGS=""
+    MYSQL_LDFLAGS=""
+    MYSQL_VERSION=""
+
+    dnl
+    dnl Check MySQL libraries
+    dnl
+
+    if test "$want_mysql" = "yes"; then
+
+        if test -z "$MYSQL_CONFIG" ; then
+            AC_PATH_PROGS([MYSQL_CONFIG], [mysql_config mysql_config5], [no])
+        fi
+
+        if test "$MYSQL_CONFIG" != "no"; then
+            MYSQL_CFLAGS="`$MYSQL_CONFIG --cflags`"
+            MYSQL_LDFLAGS="`$MYSQL_CONFIG --libs`"
+
+            MYSQL_VERSION=`$MYSQL_CONFIG --version`
+
+            found_mysql="yes"
+        else
+            found_mysql="no"
+        fi
+    fi
+	if test "$found_mysql" = "yes" ; then
+        AC_DEFINE([HAVE_MYSQL], [1],
+                  [Define to 1 if MySQL libraries are available])
+    fi
+
+	AC_SUBST([MYSQL_VERSION])
+    AC_SUBST([MYSQL_CFLAGS])
+    AC_SUBST([MYSQL_LDFLAGS])
+
+# Checks for libraries.
+AC_CHECK_LIB([m], [main])
+# FIXME: Replace `main' with a function in `-lmysqlclient':
+
+# Checks for header files.
+AC_CHECK_HEADERS([stdio.h,stdlib.h string.h unistd.h,mysql.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([memset strstr])
+
+AC_OUTPUT([Makefile])
