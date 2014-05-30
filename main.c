@@ -575,7 +575,7 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 		temp[0] = temp[0] + 'a' - 'A';
 		char* type = getJdbcType(head->type);
 		fprintf(file,"\t\t<if test=\"%s != null\">\n",temp);
-		fprintf(file,"\t\t\tand %s = #{%s,jdbcType=%s}\n",head->column,temp,type);
+		fprintf(file,"\t\t\tand %s = #{%s}\n",head->column,temp);
 		fprintf(file,"\t\t</if>\n");
 		head = (NODE*)head->next;
 	}
