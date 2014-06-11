@@ -27,7 +27,7 @@ void genorate_serviceimpl(NODE* list,char* model_name);
 char* getJavaType(char* t);
 char* getJdbcType(char* t);
 
-const int TYPE_SIZE = 6;
+const int TYPE_SIZE = 9;
 
 char* sql_type[] = {
 	"int","datetime","varchar","smallint","bigint","tinyint","float","double","date"
