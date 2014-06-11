@@ -30,15 +30,15 @@ char* getJdbcType(char* t);
 const int TYPE_SIZE = 6;
 
 char* sql_type[] = {
-	"int","datetime","varchar","smallint","bigint","tinyint","float","double"
+	"int","datetime","varchar","smallint","bigint","tinyint","float","double","date"
 };
 
 char* java_type[] = {
-	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double"
+	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double ","Date "
 };
 
 char* jdbc_type[] = {
-	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE"
+	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE","TIMESTAMP"
 };
 
 void printUsage(void){
@@ -157,7 +157,7 @@ void genorate_model(NODE* list,char* model_name){
 
 	fwrite("public class ",1,13,file);
 	fwrite(model_name,1,strlen(model_name),file);
-	fwrite("DO{\n",1,4,file);
+	fprintf(file,"DO implements Serializable{\n");
 
 	NODE* head = list;
 	while(head!=NULL){
@@ -228,7 +228,7 @@ void genorate_param(NODE* list,char* model_name){
 
 	fwrite("public class ",1,13,file);
 	fwrite(model_name,1,strlen(model_name),file);
-	fprintf(file,"SearchParam{\n");
+	fprintf(file,"SearchParam implements Serializable {\n");
 
 	NODE* head = list;
 	while(head!=NULL){
