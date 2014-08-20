@@ -23,6 +23,7 @@ void genorate_daoimpl(NODE* list,char* model_name);
 void genorate_mapper(NODE* list,char* model_name,char* table_name);
 void genorate_service(NODE* list,char* model_name);
 void genorate_serviceimpl(NODE* list,char* model_name);
+void genorate_daotest(NODE* list, char* model_name,char* table_name);
 
 char* getJavaType(char* t);
 char* getJdbcType(char* t);
@@ -43,7 +44,7 @@ char* jdbc_type[] = {
 
 void printUsage(void){
 	fprintf(stdout,"DAOmaker v1.0\nejunzen@gmail.com\n");
-	fprintf(stdout,"daomaker -h 192.168.2.229 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.daomaker.test\n");
+	fprintf(stdout,"daomaker -h 192.168.11.154 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.daomaker.test\n");
 	fprintf(stdout,"all parameter have default values except table_name!\n");
 	return;
 }
@@ -96,6 +97,7 @@ int main(int argc, char* argv[]){
 		genorate_mapper(list,model_name,table);
 		genorate_service(list,model_name);
 		genorate_serviceimpl(list,model_name);
+		genorate_daotest(list,model_name,table);
 	}else{
 		fprintf(stderr,"can not get any info from db!");
 		return 127;
@@ -106,7 +108,7 @@ int main(int argc, char* argv[]){
 
 void fixArgv(void){
 	if(host==NULL){
-		host = "127.0.0.1";
+		host = "192.168.11.154";
 	}
 	if(user==NULL){
 		user = "q3boy";
@@ -639,6 +641,65 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	fprintf(file,"</mapper>\n");
 
 	fclose(file);
+}
+
+void genorate_daotest(NODE* list, char* model_name, char* table_name){
+	
+	char temp[1024];
+	memset(temp,0,1024);
+	strcat(temp,model_name);
+	strcat(temp,"DAOImplTest.java");
+	
+	FILE* file = fopen(temp,"w");
+	fprintf(file,"package %s.dao.impl;\n\n",package);
+	fprintf(file,"import com.meituan.service.mobile.hotel.BaseDAOTest;\n");
+	fprintf(file,"import org.dbunit.dataset.IDataSet;\n");
+	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;\n");
+	fprintf(file,"import org.junit.Test;\n");
+	fprintf(file,"import java.util.ArrayList;\n");
+	fprintf(file,"import java.util.List;\n");
+	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
+	fprintf(file,"import %s.param.%sSearchParam;\n",package,model_name);
+	fprintf(file,"import %s.dao.I%sDAO;\n\n",package,model_name);
+
+	fprintf(file,"public class %sDAOImplTest extends BaseDAOTest {\n\n",model_name,model_name);
+
+	fprintf(file,"\tprivate %sDAOImpl ",model_name);
+	model_name[0] = model_name[0] + 'a' - 'A';
+	fprintf(file,"%sDAO;\n\n",model_name);
+
+
+	fprintf(file,"\t@Override\n");
+	fprintf(file,"\tprotected IDataSet getDataSet() throws Exception {\n");
+	fprintf(file,"\t\treturn super.getDataSet(\"/dataset/%s.xml\");\n",table_name);
+	fprintf(file,"\t}\n\n");
+
+	fprintf(file,"\t@Override\n");
+	fprintf(file,"\tpublic void setUp() throws Exception {\n");
+	fprintf(file,"\t\tsuper.setUp();\n");
+	fprintf(file,"\t\t%sDAO = new ",model_name);
+	model_name[0] = model_name[0] + 'A' - 'a';
+	fprintf(file,"%sDAOImpl();\n",model_name);
+	model_name[0] = model_name[0] + 'a' - 'A';
+	fprintf(file,"\t\t%sDAO.setSqlSessionTemplate(new SqlSessionTemplate(sqlSessionFactory));\n",model_name);
+	fprintf(file,"\t}\n\n");
+
+	fprintf(file,"\tpublic void testInsert(){\n");
+	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t}\n\n");
+	fprintf(file,"\tpublic void testSelect(){\n");
+	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t}\n\n");
+	fprintf(file,"\tpublic void testUpdate(){\n");
+	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t}\n\n");
+	fprintf(file,"\tpublic void testDelete(){\n");
+	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t}\n\n");
+
+	fprintf(file,"\tpublic static void main(String[] args) throws Exception {\n");
+    fprintf(file,"\t\tBaseDAOTest.exportDate(\"%s\");\n",table_name);
+	fprintf(file,"\t}\n}\n");
 }
 
 char* getJavaType(char* t){
