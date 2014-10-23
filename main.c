@@ -312,7 +312,7 @@ void genorate_dao(NODE* list,char* model_name){
 
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean delete(Integer ");	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n",model_name);
 
@@ -361,7 +361,7 @@ void genorate_service(NODE* list,char* model_name){
 
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tboolean delete(%sDO ",model_name);	
+	fprintf(file,"\tboolean delete(Integer ");	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n",model_name);
 
@@ -437,7 +437,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean delete(Integer ");	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
 	fprintf(file,"\t\tint res = sqlSessionTemplate.delete(STATEMENT_DELETE,%sDO);\n",model_name);
@@ -513,7 +513,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
 	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tpublic boolean delete(%sDO ",model_name);	
+	fprintf(file,"\tpublic boolean delete(Integer ");	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
 	fprintf(file,"\t\tboolean res = %sDAO.delete(%sDO);\n",model_name,model_name);
