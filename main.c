@@ -145,9 +145,17 @@ void genorate_model(NODE* list,char* model_name){
 		list = list->next;
 	}
 #endif
+	if(access("domain",0)==-1){
+		int res = mkdir("domain",0777);
+		if(res!=0){
+			fprintf(stderr,"can not create dir!\n");
+			exit(129);
+		}
+	}
 	char temp[1024];
 	memset(temp,0,1024);
-	strcpy(temp,model_name);
+	strcpy(temp,"domain/");
+	strcat(temp,model_name);
 	strcat(temp,"DO.java");
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.domain;\n\n",package);
@@ -217,9 +225,17 @@ void genorate_param(NODE* list,char* model_name){
 		list = list->next;
 	}
 #endif
+	if(access("param",0)==-1){
+		int res = mkdir("param",0777);
+		if(res!=0){
+			fprintf(stderr,"can not create dir!\n");
+			exit(129);
+		}
+	}
 	char temp[1024];
 	memset(temp,0,1024);
-	strcpy(temp,model_name);
+	strcpy(temp,"param/");
+	strcat(temp,model_name);
 	strcat(temp,"SearchParam.java");
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.param;\n\n",package);
@@ -281,8 +297,16 @@ void genorate_param(NODE* list,char* model_name){
 }
 
 void genorate_dao(NODE* list,char* model_name){
+	if(access("dao",0)==-1){
+		int res = mkdir("dao",0777);
+		if(res!=0){
+			fprintf(stderr,"can not create dir!\n");
+			exit(129);
+		}
+	}
 	char temp[1024];
 	memset(temp,0,1024);
+	strcat(temp,"dao/");
 	strcat(temp,"I");
 	strcat(temp,model_name);
 	strcat(temp,"DAO.java");
@@ -330,8 +354,16 @@ void genorate_dao(NODE* list,char* model_name){
 }
 
 void genorate_service(NODE* list,char* model_name){
+	if(access("service",0)==-1){
+		int res = mkdir("service",0777);
+		if(res!=0){
+			fprintf(stderr,"can not create dir!\n");
+			exit(129);
+		}
+	}
 	char temp[1024];
 	memset(temp,0,1024);
+	strcpy(temp,"service/");
 	strcat(temp,"I");
 	strcat(temp,model_name);
 	strcat(temp,"Service.java");
@@ -380,9 +412,17 @@ void genorate_service(NODE* list,char* model_name){
 
 void genorate_daoimpl(NODE* list,char* model_name){
 
+	if(access("dao/impl",0)==-1){
+		int res = mkdir("dao/impl",0777);
+		if(res!=0){
+			fprintf(stderr,"can not create dir!\n");
+			exit(129);
+		}
+	}
 	char temp[1024];
 	memset(temp,0,1024);
-	strcpy(temp,model_name);
+	strcpy(temp,"dao/impl/");
+	strcat(temp,model_name);
 	strcat(temp,"DAOImpl.java");
 	FILE* file = fopen(temp,"w");
 
@@ -453,9 +493,17 @@ void genorate_daoimpl(NODE* list,char* model_name){
 
 void genorate_serviceimpl(NODE* list,char* model_name){
 
+	if(access("service/impl",0)==-1){
+		int res = mkdir("service/impl",0777);
+		if(res!=0){
+			fprintf(stderr,"can not create dir!\n");
+			exit(129);
+		}
+	}
 	char temp[1024];
 	memset(temp,0,1024);
-	strcpy(temp,model_name);
+	strcpy(temp,"service/impl/");
+	strcat(temp,model_name);
 	strcat(temp,"ServiceImpl.java");
 	FILE* file = fopen(temp,"w");
 
