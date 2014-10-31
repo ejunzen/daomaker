@@ -28,18 +28,18 @@ void genorate_daotest(NODE* list, char* model_name,char* table_name);
 char* getJavaType(char* t);
 char* getJdbcType(char* t);
 
-const int TYPE_SIZE = 9;
+const int TYPE_SIZE = 11;
 
 char* sql_type[] = {
-	"int","datetime","varchar","smallint","bigint","tinyint","float","double","date"
+	"int","datetime","varchar","smallint","bigint","tinyint","float","double","date","time","text"
 };
 
 char* java_type[] = {
-	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double ","Date "
+	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double ","Date ","Time ","String "
 };
 
 char* jdbc_type[] = {
-	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE","TIMESTAMP"
+	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE","TIMESTAMP", "TIME","VARCHAR"
 };
 
 void printUsage(void){
@@ -153,6 +153,7 @@ void genorate_model(NODE* list,char* model_name){
 	fprintf(file,"package %s.domain;\n\n",package);
 
 	fprintf(file,"import java.util.Date;\n");
+	fprintf(file,"import java.sql.Time;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -224,6 +225,7 @@ void genorate_param(NODE* list,char* model_name){
 	fprintf(file,"package %s.param;\n\n",package);
 
 	fprintf(file,"import java.util.Date;\n");
+	fprintf(file,"import java.sql.Time;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -288,6 +290,7 @@ void genorate_dao(NODE* list,char* model_name){
 	fprintf(file,"package %s.dao;\n\n",package);
 
 	fprintf(file,"import java.util.Date;\n");
+	fprintf(file,"import java.sql.Time;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -336,6 +339,7 @@ void genorate_service(NODE* list,char* model_name){
 	fprintf(file,"package %s.service;\n\n",package);
 
 	fprintf(file,"import java.util.Date;\n");
+	fprintf(file,"import java.sql.Time;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -385,6 +389,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 	fprintf(file,"package %s.dao.impl;\n\n",package);
 
 	fprintf(file,"import java.util.Date;\n");
+	fprintf(file,"import java.sql.Time;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
@@ -457,6 +462,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"package %s.service.impl;\n\n",package);
 
 	fprintf(file,"import java.util.Date;\n");
+	fprintf(file,"import java.sql.Time;\n");
 	fprintf(file,"import java.io.Serializable;\n");
 	fprintf(file,"import java.util.List;\n");
 	fprintf(file,"import java.util.Map;\n");
