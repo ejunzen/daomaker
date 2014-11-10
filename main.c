@@ -28,18 +28,18 @@ void genorate_daotest(NODE* list, char* model_name,char* table_name);
 char* getJavaType(char* t);
 char* getJdbcType(char* t);
 
-const int TYPE_SIZE = 11;
+const int TYPE_SIZE = 12;
 
 char* sql_type[] = {
-	"int","datetime","varchar","smallint","bigint","tinyint","float","double","date","time","text"
+	"int","datetime","varchar","smallint","bigint","tinyint","float","double","date","time","text","decimal"
 };
 
 char* java_type[] = {
-	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double ","Date ","Time ","String "
+	"Integer ","Date ", "String ", "Integer ", "Long ","Integer ","Float ","Double ","Date ","Time ","String ","Double "
 };
 
 char* jdbc_type[] = {
-	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE","TIMESTAMP", "TIME","VARCHAR"
+	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE","TIMESTAMP", "TIME","VARCHAR","DOUBLE"
 };
 
 void printUsage(void){
