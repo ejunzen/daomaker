@@ -10,7 +10,7 @@ static char* host = NULL;
 static char* user = NULL;
 static char* pwd  = NULL;
 static char* db   = NULL;
-static char* table= NULL;
+char* table= NULL;
 
 static char* package = NULL;
 
@@ -49,6 +49,44 @@ void printUsage(void){
 	return;
 }
 
+void work(const char* table_name){
+	char* model_name = (char*) malloc(1024);
+	memset(model_name,0,1024);
+	getUperName(table_name,model_name);
+
+	NODE* list = getStructs(table_name);
+	if(list != NULL){
+		genorate_model(list,model_name);
+		genorate_param(list,model_name);
+		genorate_dao(list,model_name);
+		genorate_daoimpl(list,model_name);
+		genorate_mapper(list,model_name,table_name);
+		genorate_service(list,model_name);
+		genorate_serviceimpl(list,model_name);
+		genorate_daotest(list,model_name,table);
+	}else{
+		fprintf(stderr,"can not get any info from db!");
+		exit(127);
+	}
+	free(model_name);
+	clean(list);
+}
+
+/**
+* @brief get table names from user input
+*
+* @param param
+*
+* @return 
+*/
+char** getTables(int *len){
+	if(table == NULL){
+		return NULL;
+	}
+	char** result =	split(table,",",len);
+	return result;
+}
+
 int main(int argc, char* argv[]){
 
 	char ch;
@@ -83,6 +121,7 @@ int main(int argc, char* argv[]){
 	fixArgv();
 	getConection(host,user,pwd,db,3306);
 
+	/**
 	char* model_name = (char*) malloc(1024);
 	memset(model_name,0,1024);
 	getUperName(table,model_name);
@@ -102,6 +141,14 @@ int main(int argc, char* argv[]){
 		fprintf(stderr,"can not get any info from db!");
 		return 127;
 	}
+	*/
+	int len;
+	char** tables = getTables(&len);
+	int i =0;
+	for(;i< len;i++){
+		work(tables[i]);
+	}
+	return 0;
 
 	return 0;
 }

@@ -13,3 +13,5 @@ typedef struct node{
 void getConection(const char* host,const char* user,const char* pwd,const char* db,	int port);
 
 NODE* getStructs(const char* tableName);
+
+void clean(NODE* start);
