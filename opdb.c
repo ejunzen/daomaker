@@ -62,6 +62,21 @@ NODE* getStructs(const char* tableName){
 	}else{
 		fprintf(stderr,"error in query,please check your sql!\n");
 	}
+	free(sql);
 	return head;
 }
 
+void clean(NODE* start){
+
+	if(start == NULL){
+		return;
+	}
+	NODE* cur = start;
+	while(cur !=NULL){
+		NODE* next = cur->next;
+		free(cur);
+		cur = next;
+	}
+	head = NULL;
+	end = NULL;
+}
