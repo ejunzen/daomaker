@@ -47,6 +47,7 @@ NODE* getStructs(const char* tableName){
 			memset(node,0,sizeof(NODE));
 			node->column = mysql_row[0];
 			node->type = mysql_row[1];
+			formatComment(mysql_row[8]);
 			node->comment = mysql_row[8];
 			if(head == NULL){
 				head = node;
@@ -79,4 +80,17 @@ void clean(NODE* start){
 	}
 	head = NULL;
 	end = NULL;
+}
+
+void formatComment(char* comment){
+	if(comment == NULL){
+		return;
+	}
+	int len = strlen(comment);
+	int i=0;
+	for(;i<len;i++){
+		if(comment[i]=='\n'){
+			comment[i] = ' ';
+		}
+	}
 }

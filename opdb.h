@@ -15,3 +15,5 @@ void getConection(const char* host,const char* user,const char* pwd,const char* 
 NODE* getStructs(const char* tableName);
 
 void clean(NODE* start);
+
+void formatComment(char* source);
