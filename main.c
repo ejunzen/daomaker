@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include "opdb.h"
 #include "utils.h"
@@ -12,15 +13,16 @@ static char* pwd  = NULL;
 static char* db   = NULL;
 char* table= NULL;
 
+static int hasAnotation = 0;
 static char* package = NULL;
 
 void printUsage(void);
 void fixArgv(void);
 void genorate_model(NODE* list,char* model_name);
 void genorate_param(NODE* list,char* model_name);
-void genorate_dao(NODE* list,char* model_name);
+void genorate_dao(NODE* list,char* model_name,int hasAnotation);
 void genorate_daoimpl(NODE* list,char* model_name);
-void genorate_mapper(NODE* list,char* model_name,char* table_name);
+void genorate_mapper(NODE* list,char* model_name,char* table_name,int hasAnotation);
 void genorate_service(NODE* list,char* model_name);
 void genorate_serviceimpl(NODE* list,char* model_name);
 void genorate_daotest(NODE* list, char* model_name,char* table_name);
@@ -42,14 +44,44 @@ char* jdbc_type[] = {
 	"INTEGER","TIMESTAMP","VARCHAR","INTEGER","INTEGER","INTEGER","FLOAT","DOUBLE","TIMESTAMP", "TIME","VARCHAR","DOUBLE"
 };
 
+//	while ((ch = getopt(argc, argv, "vh:u:p:d:t:P:")) != EOF) {
+const struct option long_options[] = {
+        { "help",    0, NULL, 'a'},
+        { "version",    0, NULL, 'v' },
+        { "host",    1, NULL, 'h' },
+        { "username",    1, NULL, 'u' },
+        { "password",    1, NULL, 'p' },
+        { "package",    1, NULL, 'P' },
+        { "database",    1, NULL, 'd' },
+        { "table",    1, NULL, 't' },
+        { "with-anotation",    0, NULL, 'b'},
+        { NULL,        0, NULL, 0   }
+    };
+
 void printUsage(void){
 	fprintf(stdout,"DAOmaker v1.0\nejunzen@gmail.com\n");
-	fprintf(stdout,"daomaker -h 192.168.11.154 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.daomaker.test\n");
-	fprintf(stdout,"all parameter have default values except table_name!\n");
+	 fprintf( stdout,
+        "--help           Display this usage information.\n"
+        "-h  --host       the host of your database.\n"
+        "-u  --username   the username of your database.\n"
+        "-p  --password   thie password of your database.\n"
+        "-P  --package    java package name.\n"
+        "-d  --database   the database name.\n"
+        "-t  --table      the table name which you want to genorate code for.\n"
+        "--with-anotation the table name which you want to genorate code for.\n"
+        "-v  --version Print verbose messages.\n");
+	fprintf(stdout,"example:\n daomaker -h 192.168.11.154 -u q3boy -p123 -d mobile_service -t hotel_subway_info -P com.daomaker.test\n");
+	fprintf(stdout," all parameter have default values except table_name!\n");
 	return;
 }
 
-void work(const char* table_name){
+/**
+* @brief 生成文件的工作函数
+*
+* @param table_name
+* @param hasAnotation
+*/
+void work(const char* table_name,int hasAnotation){
 	char* model_name = (char*) malloc(1024);
 	memset(model_name,0,1024);
 	getUperName(table_name,model_name);
@@ -58,9 +90,11 @@ void work(const char* table_name){
 	if(list != NULL){
 		genorate_model(list,model_name);
 		genorate_param(list,model_name);
-		genorate_dao(list,model_name);
-		genorate_daoimpl(list,model_name);
-		genorate_mapper(list,model_name,table_name);
+		genorate_dao(list,model_name,hasAnotation);
+		if(hasAnotation == 0){
+			genorate_daoimpl(list,model_name);
+		}
+		genorate_mapper(list,model_name,table_name,hasAnotation);
 		genorate_service(list,model_name);
 		genorate_serviceimpl(list,model_name);
 		genorate_daotest(list,model_name,table);
@@ -71,6 +105,7 @@ void work(const char* table_name){
 	free(model_name);
 	clean(list);
 }
+
 
 /**
 * @brief get table names from user input
@@ -91,8 +126,13 @@ int main(int argc, char* argv[]){
 
 	char ch;
 
-	while ((ch = getopt(argc, argv, "vh:u:p:d:t:P:")) != EOF) {
-		switch(ch){
+	int next_option;
+	const char *const short_options = "abvh:u:p:d:t:P:";
+	do{
+        next_option = getopt_long( argc, argv, short_options,
+                       long_options,NULL );
+        switch( next_option )
+        {
 			case 'v':
 				printUsage();
 				break;
@@ -114,39 +154,27 @@ int main(int argc, char* argv[]){
 			case 'P':
 				package = optarg;
 				break;
-			default:
+			case 'a':
+				printUsage();
 				break;
-		}
-	}	
+			case 'b':
+				hasAnotation = 1;
+				break;
+        	case -1:
+            	break;
+        	default:
+				break;
+        }
+    }while(next_option != -1);
+
 	fixArgv();
 	getConection(host,user,pwd,db,3306);
 
-	/**
-	char* model_name = (char*) malloc(1024);
-	memset(model_name,0,1024);
-	getUperName(table,model_name);
-
-	NODE* list = getStructs(table);
-
-	if(list != NULL){
-		genorate_model(list,model_name);
-		genorate_param(list,model_name);
-		genorate_dao(list,model_name);
-		genorate_daoimpl(list,model_name);
-		genorate_mapper(list,model_name,table);
-		genorate_service(list,model_name);
-		genorate_serviceimpl(list,model_name);
-		genorate_daotest(list,model_name,table);
-	}else{
-		fprintf(stderr,"can not get any info from db!");
-		return 127;
-	}
-	*/
 	int len;
 	char** tables = getTables(&len);
 	int i =0;
 	for(;i< len;i++){
-		work(tables[i]);
+		work(tables[i],hasAnotation);
 	}
 	return 0;
 
@@ -343,7 +371,7 @@ void genorate_param(NODE* list,char* model_name){
 	fclose(file);
 }
 
-void genorate_dao(NODE* list,char* model_name){
+void genorate_dao(NODE* list,char* model_name,int hasAnotation){
 	if(access("dao",0)==-1){
 		int res = mkdir("dao",0777);
 		if(res!=0){
@@ -368,6 +396,9 @@ void genorate_dao(NODE* list,char* model_name){
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 
+	if(hasAnotation != 0){
+		fprintf(file,"@Repository\n");
+	}
 	fprintf(file,"public interface I%sDAO {\n",model_name);
 
 	//insert
@@ -628,7 +659,7 @@ void genorate_serviceimpl(NODE* list,char* model_name){
  * @param list
  * @param model_name
  */
-void genorate_mapper(NODE* list,char* model_name,char* table_name){
+void genorate_mapper(NODE* list,char* model_name,char* table_name,int hasAnotation){
 	char temp[1024];
 	memset(temp,0,1024);
 	sprintf(temp,"mapper-%s.xml",table_name);
@@ -642,7 +673,11 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name){
 	//xml head
 	fprintf(file,"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 	fprintf(file,"<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n");
-	fprintf(file,"<mapper namespace=\"%s.%sMapper\" >\n",package,model_name);	
+	if(hasAnotation == 0){
+		fprintf(file,"<mapper namespace=\"%s.%sMapper\" >\n",package,model_name);	
+	} else {
+		fprintf(file,"<mapper namespace=\"%s.dao.I%sDAO\" >\n",package,model_name);	
+	}
 	//resultMap
 	fprintf(file,"\t<resultMap id=\"BaseResultMap\" type=\"%s.domain.%sDO\">\n",package,model_name);
 	NODE* head = list;
