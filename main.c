@@ -744,6 +744,9 @@ void genorate_mapper(NODE* list,char* model_name,char* table_name,int hasAnotati
 
 	//insert
 	fprintf(file,"\t<insert id=\"insert\" parameterType=\"%s.domain.%sDO\">\n",package,model_name);
+	fprintf(file,"\t\t<selectKey order=\"AFTER\" resultType=\"int\" keyProperty=\"id\">\n");
+	fprintf(file,"\t\t\tselect last_insert_id() as id\n");
+	fprintf(file,"\t\t</selectKey>\n");
 	fprintf(file,"\t\tinsert into %s(<include refid=\"Base_Column_List\" />) \n",table_name);
 	fprintf(file,"\t\tvalues(\n");
 	head = list;
