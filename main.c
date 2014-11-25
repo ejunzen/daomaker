@@ -395,6 +395,9 @@ void genorate_dao(NODE* list,char* model_name,int hasAnotation){
 	fprintf(file,"import java.util.Map;\n");
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
+	if(hasAnotation != 0){
+		fprintf(file,"import org.springframework.stereotype.Repository;\n");
+	}
 
 	if(hasAnotation != 0){
 		fprintf(file,"@Repository\n");
@@ -608,6 +611,9 @@ void genorate_serviceimpl(NODE* list,char* model_name,int hasAnotation){
 	fprintf(file,"import %s.param.%sSearchParam;\n\n",package,model_name);
 	fprintf(file,"import %s.service.I%sService;\n",package,model_name);
 	fprintf(file,"import %s.dao.I%sDAO;\n",package,model_name);
+	if(hasAnotation != 0){
+		fprintf(file,"import org.springframework.beans.factory.annotation.Autowired;\n");
+	}
 
 	fprintf(file,"public class %sServiceImpl implements I%sService{\n\n",model_name,model_name);
 
