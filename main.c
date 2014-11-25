@@ -23,8 +23,8 @@ void genorate_param(NODE* list,char* model_name);
 void genorate_dao(NODE* list,char* model_name,int hasAnotation);
 void genorate_daoimpl(NODE* list,char* model_name);
 void genorate_mapper(NODE* list,char* model_name,char* table_name,int hasAnotation);
-void genorate_service(NODE* list,char* model_name);
-void genorate_serviceimpl(NODE* list,char* model_name);
+void genorate_service(NODE* list,char* model_name,int hasAnotation);
+void genorate_serviceimpl(NODE* list,char* model_name,int hasAnotation);
 void genorate_daotest(NODE* list, char* model_name,char* table_name);
 
 char* getJavaType(char* t);
@@ -95,8 +95,8 @@ void work(const char* table_name,int hasAnotation){
 			genorate_daoimpl(list,model_name);
 		}
 		genorate_mapper(list,model_name,table_name,hasAnotation);
-		genorate_service(list,model_name);
-		genorate_serviceimpl(list,model_name);
+		genorate_service(list,model_name,hasAnotation);
+		genorate_serviceimpl(list,model_name,hasAnotation);
 		genorate_daotest(list,model_name,table);
 	}else{
 		fprintf(stderr,"can not get any info from db!");
@@ -402,19 +402,31 @@ void genorate_dao(NODE* list,char* model_name,int hasAnotation){
 	fprintf(file,"public interface I%sDAO {\n",model_name);
 
 	//insert
-	fprintf(file,"\tpublic boolean insert(%sDO ",model_name);	
+	if(hasAnotation != 0){
+		fprintf(file,"\tpublic Integer insert(%sDO ",model_name);	
+	}else{
+		fprintf(file,"\tpublic boolean insert(%sDO ",model_name);	
+	}
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n",model_name);
 
 	//update
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
+	if(hasAnotation != 0){
+		fprintf(file,"\tpublic Integer update(%sDO ",model_name);	
+	}else {
+		fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
+	}
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n", model_name);
 
 	//delete
 	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tpublic boolean delete(Integer ");	
+	if(hasAnotation != 0){
+		fprintf(file,"\tpublic Integer delete(Integer ");	
+	}else{
+		fprintf(file,"\tpublic boolean delete(Integer ");	
+	}
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO);\n\n",model_name);
 
@@ -431,7 +443,7 @@ void genorate_dao(NODE* list,char* model_name,int hasAnotation){
 	fclose(file);
 }
 
-void genorate_service(NODE* list,char* model_name){
+void genorate_service(NODE* list,char* model_name,int hasAnotation){
 	if(access("service",0)==-1){
 		int res = mkdir("service",0777);
 		if(res!=0){
@@ -569,7 +581,7 @@ void genorate_daoimpl(NODE* list,char* model_name){
 
 }
 
-void genorate_serviceimpl(NODE* list,char* model_name){
+void genorate_serviceimpl(NODE* list,char* model_name,int hasAnotation){
 
 	if(access("service/impl",0)==-1){
 		int res = mkdir("service/impl",0777);
@@ -599,13 +611,19 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 
 	fprintf(file,"public class %sServiceImpl implements I%sService{\n\n",model_name,model_name);
 
+	if(hasAnotation != 0){
+		fprintf(file,"\t@Autowired\n");
+	}
 	fprintf(file,"\tprivate I%sDAO",model_name); 
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file," %sDAO;\n\n",model_name);
-	model_name[0] = model_name[0]+'A'-'a';
-	fprintf(file,"\tpublic void set%sDAO(I%sDAO ",model_name,model_name);
-	model_name[0] = model_name[0]+'a'-'A';
-	fprintf(file,"%sDAO) {\n\t\tthis.%sDAO= %sDAO;\n\t}\n\n",model_name,model_name,model_name);
+
+	if(hasAnotation == 0){
+		model_name[0] = model_name[0]+'A'-'a';
+		fprintf(file,"\tpublic void set%sDAO(I%sDAO ",model_name,model_name);
+		model_name[0] = model_name[0]+'a'-'A';
+		fprintf(file,"%sDAO) {\n\t\tthis.%sDAO= %sDAO;\n\t}\n\n",model_name,model_name,model_name);
+	}
 	model_name[0] = model_name[0]+'A'-'a';
 
 	//insert
@@ -613,8 +631,13 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"\tpublic boolean insert(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n",model_name);
-	fprintf(file,"\t\tboolean res = %sDAO.insert(%sDO);\n",model_name,model_name);
-	fprintf(file,"\t\treturn res;\n");
+	if(hasAnotation != 0){
+		fprintf(file,"\t\tInteger res = %sDAO.insert(%sDO);\n",model_name,model_name);
+		fprintf(file,"\t\treturn res > 0;\n");
+	}else {
+		fprintf(file,"\t\tboolean res = %sDAO.insert(%sDO);\n",model_name,model_name);
+		fprintf(file,"\t\treturn res;\n");
+	}
 	fprintf(file,"\t}\n\n");
 
 	//select
@@ -632,8 +655,13 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"\tpublic boolean update(%sDO ",model_name);	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
-	fprintf(file,"\t\tboolean res = %sDAO.update(%sDO);\n",model_name,model_name);
-	fprintf(file,"\t\treturn res;\n");
+	if(hasAnotation != 0){
+		fprintf(file,"\t\tInteger res = %sDAO.update(%sDO);\n",model_name,model_name);
+		fprintf(file,"\t\treturn res > 0;\n");
+	}else {
+		fprintf(file,"\t\tboolean res = %sDAO.update(%sDO);\n",model_name,model_name);
+		fprintf(file,"\t\treturn res;\n");
+	}
 	fprintf(file,"\t}\n\n");
 
 	//delete
@@ -642,8 +670,13 @@ void genorate_serviceimpl(NODE* list,char* model_name){
 	fprintf(file,"\tpublic boolean delete(Integer ");	
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n", model_name);
-	fprintf(file,"\t\tboolean res = %sDAO.delete(%sDO);\n",model_name,model_name);
-	fprintf(file,"\t\treturn res;\n");
+	if(hasAnotation != 0){
+		fprintf(file,"\t\tInteger res = %sDAO.delete(%sDO);\n",model_name,model_name);
+		fprintf(file,"\t\treturn res>0;\n");
+	}else {
+		fprintf(file,"\t\tboolean res = %sDAO.delete(%sDO);\n",model_name,model_name);
+		fprintf(file,"\t\treturn res;\n");
+	}
 	fprintf(file,"\t}\n\n");
 
 	fprintf(file,"}\n");
