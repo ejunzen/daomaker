@@ -49,6 +49,17 @@ NODE* getStructs(const char* tableName){
 			node->type = mysql_row[1];
 			formatComment(mysql_row[8]);
 			node->comment = mysql_row[8];
+			//判断是否可以为null
+			if(strcmp("YES",mysql_row[3])==0){
+				node->is_null = 1;
+			}else {
+				node->is_null = 0;
+			}
+			if(strcmp("PRI",mysql_row[4])==0){
+				node->is_primary = 1;
+			}else {
+				node->is_primary = 0;
+			}
 			if(head == NULL){
 				head = node;
 			}else if(head!=NULL && end == NULL ){

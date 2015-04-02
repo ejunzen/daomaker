@@ -285,6 +285,27 @@ void genorate_model(NODE* list,char* model_name){
 		fprintf(file,"\t\treturn %s;\n\t}\n\n",temp);
 		head = (NODE*) head->next;
 	}
+
+	//genrate iscandump
+
+	fprintf(file,"\tpublic boolean isCanDump2DB() {\n");
+	fprintf(file,"\t\tboolean res = true\n");
+	fprintf(file,"\t\tdo{\n");
+
+	head = list;
+	while(head != NULL){
+		if(head->is_null == 0 && head->is_primary == 0 ){
+			fprintf(file,"\t\t\tif(%s == null){\n",head->column);
+			fprintf(file,"\t\t\t\tres=false;\n\t\t\t\tbreak;\n");
+			fprintf(file,"\t\t\t}\n");
+		}
+		head = (NODE*) head->next;
+	}
+
+	fprintf(file,"\t\t}while(false);\n");
+	fprintf(file,"\t\treturn res;\n\t}\n");
+	
+
 	fwrite("}\n",1,2,file);
 
 	fclose(file);
@@ -638,9 +659,17 @@ void genorate_serviceimpl(NODE* list,char* model_name,int hasAnotation){
 	model_name[0] = model_name[0]+'a'-'A';
 	fprintf(file,"%sDO){\n",model_name);
 	if(hasAnotation != 0){
+		fprintf(file,"\t\tif(%sDO.isCanDump2DB() == false){\n");
+		fprintf(file,"\t\t\tbreak;\n");
+		fprintf(file,"\t\t}\n");
+
 		fprintf(file,"\t\tInteger res = %sDAO.insert(%sDO);\n",model_name,model_name);
 		fprintf(file,"\t\treturn res > 0;\n");
 	}else {
+		fprintf(file,"\t\tif(%sDO.isCanDump2DB() == false){\n",model_name);
+		fprintf(file,"\t\t\tbreak;\n");
+		fprintf(file,"\t\t}\n");
+
 		fprintf(file,"\t\tboolean res = %sDAO.insert(%sDO);\n",model_name,model_name);
 		fprintf(file,"\t\treturn res;\n");
 	}

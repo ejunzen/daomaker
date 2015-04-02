@@ -7,6 +7,8 @@ typedef struct node{
 	char* column;
 	char* type;
 	char* comment;
+	int is_null;
+	int is_primary;
 	struct NODE* next;
 } NODE;
 
