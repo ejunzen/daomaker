@@ -663,7 +663,7 @@ void genorate_serviceimpl(NODE* list,char* model_name,int hasAnotation){
 	fprintf(file,"%sDO){\n",model_name);
 	if(hasAnotation != 0){
 		fprintf(file,"\t\tif(%sDO.isCanDump2DB() == false){\n");
-		fprintf(file,"\t\t\tbreak;\n");
+		fprintf(file,"\t\t\treturn false;\n");
 		fprintf(file,"\t\t}\n");
 
 		fprintf(file,"\t\tInteger res = %sDAO.insert(%sDO);\n",model_name,model_name);
