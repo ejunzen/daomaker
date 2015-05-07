@@ -297,6 +297,7 @@ void genorate_model(NODE* list,char* model_name){
 		if(head->is_null == 0 && head->is_primary == 0 ){
 			memset(temp,0,1024);
 			getUperName(head->column,temp);
+			temp[0] = temp[0]+'a'-'A';
 			fprintf(file,"\t\t\tif(%s == null){\n",temp);
 			fprintf(file,"\t\t\t\tres=false;\n\t\t\t\tbreak;\n");
 			fprintf(file,"\t\t\t}\n");
