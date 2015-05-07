@@ -289,13 +289,15 @@ void genorate_model(NODE* list,char* model_name){
 	//genrate iscandump
 
 	fprintf(file,"\tpublic boolean isCanDump2DB() {\n");
-	fprintf(file,"\t\tboolean res = true\n");
+	fprintf(file,"\t\tboolean res = true;\n");
 	fprintf(file,"\t\tdo{\n");
 
 	head = list;
 	while(head != NULL){
 		if(head->is_null == 0 && head->is_primary == 0 ){
-			fprintf(file,"\t\t\tif(%s == null){\n",head->column);
+			memset(temp,0,1024);
+			getUperName(head->column,temp);
+			fprintf(file,"\t\t\tif(%s == null){\n",temp);
 			fprintf(file,"\t\t\t\tres=false;\n\t\t\t\tbreak;\n");
 			fprintf(file,"\t\t\t}\n");
 		}
