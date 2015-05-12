@@ -862,9 +862,6 @@ void genorate_daotest(NODE* list, char* model_name, char* table_name){
 	
 	FILE* file = fopen(temp,"w");
 	fprintf(file,"package %s.dao.impl;\n\n",package);
-	fprintf(file,"import com.meituan.service.mobile.hotel.BaseDAOTest;\n");
-	fprintf(file,"import org.dbunit.dataset.IDataSet;\n");
-	fprintf(file,"import org.mybatis.spring.SqlSessionTemplate;\n");
 	fprintf(file,"import org.junit.Test;\n");
 	fprintf(file,"import java.util.ArrayList;\n");
 	fprintf(file,"import java.util.List;\n");
@@ -872,44 +869,47 @@ void genorate_daotest(NODE* list, char* model_name, char* table_name){
 	fprintf(file,"import %s.param.%sSearchParam;\n",package,model_name);
 	fprintf(file,"import %s.dao.I%sDAO;\n\n",package,model_name);
 
-	fprintf(file,"public class %sDAOImplTest extends BaseDAOTest {\n\n",model_name,model_name);
+	fprintf(file,"@RunWith(SpringJUnit4ClassRunner.class)\n");
+	fprintf(file,"@ContextConfiguration(\"classpath:/spring/dao/*.xml\")\n");
+	fprintf(file,"public class %sDAOImplTest {\n\n",model_name,model_name);
 
+	fprintf(file,"\t@Autowaired\n");
 	fprintf(file,"\tprivate %sDAOImpl ",model_name);
 	model_name[0] = model_name[0] + 'a' - 'A';
 	fprintf(file,"%sDAO;\n\n",model_name);
 
-
-	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tprotected IDataSet getDataSet() throws Exception {\n");
-	fprintf(file,"\t\treturn super.getDataSet(\"/dataset/%s.xml\");\n",table_name);
-	fprintf(file,"\t}\n\n");
-
-	fprintf(file,"\t@Override\n");
-	fprintf(file,"\tpublic void setUp() throws Exception {\n");
-	fprintf(file,"\t\tsuper.setUp();\n");
-	fprintf(file,"\t\t%sDAO = new ",model_name);
-	model_name[0] = model_name[0] + 'A' - 'a';
-	fprintf(file,"%sDAOImpl();\n",model_name);
-	model_name[0] = model_name[0] + 'a' - 'A';
-	fprintf(file,"\t\t%sDAO.setSqlSessionTemplate(new SqlSessionTemplate(sqlSessionFactory));\n",model_name);
-	fprintf(file,"\t}\n\n");
-
 	fprintf(file,"\tpublic void testInsert(){\n");
-	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t\ttry{\n");
+	fprintf(file,"\t\t\t%sDAO.insert(null){\n",model_name);
+	fprintf(file,"\t\t}catch(Exception e){\n");
+	fprintf(file,"\t\t}\n");
 	fprintf(file,"\t}\n\n");
 	fprintf(file,"\tpublic void testSelect(){\n");
-	fprintf(file,"\t\t//TODO to be continue...\n");
+
+
+	model_name[0] = model_name[0] + 'A' - 'a';
+	fprintf(file,"\t\t%sSearchParam param = new %sSearchParam();\n",model_name,model_name);
+	model_name[0] = model_name[0] + 'a' - 'A';
+    fprintf(file,"\t\ttry{\n");
+	fprintf(file,"\t\t\t%sDAO.listByParam(param);\n",model_name);
+    fprintf(file,"\t\t}catch (Exception e){\n");
+	fprintf(file,"\t\t}\n\n");
+
 	fprintf(file,"\t}\n\n");
 	fprintf(file,"\tpublic void testUpdate(){\n");
-	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t\ttry{\n");
+	fprintf(file,"\t\t\t%sDAO.update(null){\n",model_name);
+	fprintf(file,"\t\t}catch(Exception e){\n");
+	fprintf(file,"\t\t}\n");
 	fprintf(file,"\t}\n\n");
 	fprintf(file,"\tpublic void testDelete(){\n");
-	fprintf(file,"\t\t//TODO to be continue...\n");
+	fprintf(file,"\t\ttry{\n");
+	fprintf(file,"\t\t\t%sDAO.delete(null){\n",model_name);
+	fprintf(file,"\t\t}catch(Exception e){\n");
+	fprintf(file,"\t\t}\n");
 	fprintf(file,"\t}\n\n");
 
-	fprintf(file,"\tpublic static void main(String[] args) throws Exception {\n");
-    fprintf(file,"\t\tBaseDAOTest.exportDate(\"%s\");\n",table_name);
-	fprintf(file,"\t}\n}\n");
+	fprintf(file,"}\n\n");
 }
 
 char* getJavaType(char* t){
