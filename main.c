@@ -865,6 +865,12 @@ void genorate_daotest(NODE* list, char* model_name, char* table_name){
 	fprintf(file,"import org.junit.Test;\n");
 	fprintf(file,"import java.util.ArrayList;\n");
 	fprintf(file,"import java.util.List;\n");
+	
+	fprintf(file,"import org.junit.runner.RunWith;\n");
+	fprintf(file,"import org.springframework.beans.factory.annotation.Autowired;\n");
+	fprintf(file,"import org.springframework.test.context.ContextConfiguration;\n");
+	fprintf(file,"import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;\n");
+
 	fprintf(file,"import %s.domain.%sDO;\n",package,model_name);
 	fprintf(file,"import %s.param.%sSearchParam;\n",package,model_name);
 	fprintf(file,"import %s.dao.I%sDAO;\n\n",package,model_name);
@@ -873,17 +879,19 @@ void genorate_daotest(NODE* list, char* model_name, char* table_name){
 	fprintf(file,"@ContextConfiguration(\"classpath:/spring/dao/*.xml\")\n");
 	fprintf(file,"public class %sDAOImplTest {\n\n",model_name,model_name);
 
-	fprintf(file,"\t@Autowaired\n");
+	fprintf(file,"\t@Autowired\n");
 	fprintf(file,"\tprivate %sDAOImpl ",model_name);
 	model_name[0] = model_name[0] + 'a' - 'A';
 	fprintf(file,"%sDAO;\n\n",model_name);
 
+	fprintf(file,"\t@Test\n");
 	fprintf(file,"\tpublic void testInsert(){\n");
 	fprintf(file,"\t\ttry{\n");
-	fprintf(file,"\t\t\t%sDAO.insert(null){\n",model_name);
+	fprintf(file,"\t\t\t%sDAO.insert(null);\n",model_name);
 	fprintf(file,"\t\t}catch(Exception e){\n");
 	fprintf(file,"\t\t}\n");
 	fprintf(file,"\t}\n\n");
+	fprintf(file,"\t@Test\n");
 	fprintf(file,"\tpublic void testSelect(){\n");
 
 
@@ -896,15 +904,17 @@ void genorate_daotest(NODE* list, char* model_name, char* table_name){
 	fprintf(file,"\t\t}\n\n");
 
 	fprintf(file,"\t}\n\n");
+	fprintf(file,"\t@Test\n");
 	fprintf(file,"\tpublic void testUpdate(){\n");
 	fprintf(file,"\t\ttry{\n");
-	fprintf(file,"\t\t\t%sDAO.update(null){\n",model_name);
+	fprintf(file,"\t\t\t%sDAO.update(null);\n",model_name);
 	fprintf(file,"\t\t}catch(Exception e){\n");
 	fprintf(file,"\t\t}\n");
 	fprintf(file,"\t}\n\n");
+	fprintf(file,"\t@Test\n");
 	fprintf(file,"\tpublic void testDelete(){\n");
 	fprintf(file,"\t\ttry{\n");
-	fprintf(file,"\t\t\t%sDAO.delete(null){\n",model_name);
+	fprintf(file,"\t\t\t%sDAO.delete(null);\n",model_name);
 	fprintf(file,"\t\t}catch(Exception e){\n");
 	fprintf(file,"\t\t}\n");
 	fprintf(file,"\t}\n\n");
